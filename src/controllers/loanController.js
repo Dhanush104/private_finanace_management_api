@@ -4,27 +4,15 @@ const { calculateLoanDetails } = require('../services/loanService');
 const { updateGroupFund } = require('../services/groupFundService');
 const { broadcast } = require('../config/socket');
 
-// GET /api/loans  (admin: all | member: own)
+// GET /api/loans  (all members can see all loans)
 const getLoans = async (req, res, next) => {
     try {
-        let query, params;
-        if (req.user.role === 'admin') {
-            query = `SELECT l.*, u.name as member_name, a.name as approved_by_name
+        const query = `SELECT l.*, u.name as member_name, a.name as approved_by_name
                FROM loans l
                JOIN users u ON l.user_id = u.id
                LEFT JOIN users a ON l.approved_by = a.id
                ORDER BY l.created_at DESC`;
-            params = [];
-        } else {
-            query = `SELECT l.*, u.name as member_name, a.name as approved_by_name
-               FROM loans l
-               JOIN users u ON l.user_id = u.id
-               LEFT JOIN users a ON l.approved_by = a.id
-               WHERE l.user_id = ?
-               ORDER BY l.created_at DESC`;
-            params = [req.user.id];
-        }
-        const [rows] = await pool.query(query, params);
+        const [rows] = await pool.query(query);
         res.json({ success: true, loans: rows });
     } catch (err) { next(err); }
 };
@@ -38,7 +26,6 @@ const getLoan = async (req, res, next) => {
             [req.params.id]
         );
         if (!loan) throw new AppError('Loan not found', 404);
-        if (req.user.role !== 'admin' && req.user.id !== loan.user_id) throw new AppError('Access denied', 403);
         res.json({ success: true, loan });
     } catch (err) { next(err); }
 };

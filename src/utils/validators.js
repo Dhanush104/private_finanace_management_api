@@ -58,6 +58,13 @@ const updateContributionSchema = z.object({
     }),
 });
 
+const addFundsSchema = z.object({
+    body: z.object({
+        amount: z.number().positive(),
+        description: z.string().min(3).max(255),
+    }),
+});
+
 const requestLoanSchema = z.object({
     body: z.object({
         principal: z.number().positive(),
@@ -82,6 +89,7 @@ module.exports = {
     groupConfigSchema,
     contributionSchema,
     updateContributionSchema,
+    addFundsSchema,
     requestLoanSchema,
     repaymentSchema,
 };

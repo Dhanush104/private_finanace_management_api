@@ -4,26 +4,15 @@ const { updateGroupFund } = require('../services/groupFundService');
 const { updateCreditScore, CREDIT_EVENTS } = require('../services/creditScoreService');
 const { broadcast } = require('../config/socket');
 
-// GET /api/contributions  (admin: all | member: own)
+// GET /api/contributions  (all members can see all contributions)
 const getContributions = async (req, res, next) => {
     try {
-        let query, params;
-        if (req.user.role === 'admin') {
-            query = `SELECT c.*, u.name as member_name
+        const query = `SELECT c.*, u.name as member_name
                FROM contributions c
                JOIN users u ON c.user_id = u.id
                ORDER BY c.created_at DESC`;
-            params = [];
-        } else {
-            query = `SELECT c.*, u.name as member_name
-               FROM contributions c
-               JOIN users u ON c.user_id = u.id
-               WHERE c.user_id = ?
-               ORDER BY c.created_at DESC`;
-            params = [req.user.id];
-        }
 
-        const [rows] = await pool.query(query, params);
+        const [rows] = await pool.query(query);
         res.json({ success: true, contributions: rows });
     } catch (err) { next(err); }
 };
@@ -113,4 +102,64 @@ const updateContribution = async (req, res, next) => {
     } catch (err) { next(err); }
 };
 
-module.exports = { getContributions, recordContribution, updateContribution };
+// POST /api/contributions/:id/approve (admin only)
+const approveContribution = async (req, res, next) => {
+    const conn = await pool.getConnection();
+    try {
+        await conn.beginTransaction();
+
+        const [rows] = await conn.query('SELECT * FROM contributions WHERE id = ? FOR UPDATE', [req.params.id]);
+        if (!rows.length) throw new AppError('Contribution not found', 404);
+        const contrib = rows[0];
+
+        if (contrib.status !== 'pending') throw new AppError('Only pending contributions can be approved', 400);
+
+        const paid_at = new Date();
+        await conn.query('UPDATE contributions SET status = "paid", paid_at = ? WHERE id = ?', [paid_at, req.params.id]);
+
+        // Add to group fund
+        const newFund = await updateGroupFund(
+            conn, contrib.amount, 'contribution',
+            `Approved monthly contribution for ${contrib.month_year}`,
+            contrib.user_id, contrib.id
+        );
+
+        // Update credit score
+        const newScore = await updateCreditScore(contrib.user_id, CREDIT_EVENTS.ON_TIME_CONTRIBUTION, conn);
+
+        await conn.commit();
+
+        const [updatedRows] = await pool.query(
+            `SELECT c.*, u.name as member_name FROM contributions c JOIN users u ON c.user_id = u.id WHERE c.id = ?`,
+            [req.params.id]
+        );
+        const updatedContrib = updatedRows[0];
+
+        broadcast('contribution_added', { contribution: updatedContrib, new_fund: newFund });
+        broadcast('credit_score_updated', { user_id: contrib.user_id, new_score: newScore });
+
+        res.json({ success: true, message: 'Contribution approved', contribution: updatedContrib });
+    } catch (err) {
+        if (conn) await conn.rollback();
+        next(err);
+    } finally {
+        if (conn) conn.release();
+    }
+};
+
+// POST /api/contributions/:id/reject (admin only)
+const rejectContribution = async (req, res, next) => {
+    try {
+        const [rows] = await pool.query('SELECT * FROM contributions WHERE id = ?', [req.params.id]);
+        if (!rows.length) throw new AppError('Contribution not found', 404);
+        const contrib = rows[0];
+
+        if (contrib.status !== 'pending') throw new AppError('Only pending contributions can be rejected', 400);
+
+        await pool.query('UPDATE contributions SET status = "rejected" WHERE id = ?', [req.params.id]);
+
+        res.json({ success: true, message: 'Contribution rejected' });
+    } catch (err) { next(err); }
+};
+
+module.exports = { getContributions, recordContribution, updateContribution, approveContribution, rejectContribution };
