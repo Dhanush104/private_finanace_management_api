@@ -1,6 +1,6 @@
 const pool = require('../config/db');
 const AppError = require('../utils/AppError');
-const { calculateLoanDetails } = require('../services/loanService');
+const { calculateLoanDetails, calculateDynamicLoanDetails } = require('../services/loanService');
 const { updateGroupFund } = require('../services/groupFundService');
 const { broadcast } = require('../config/socket');
 
@@ -13,7 +13,11 @@ const getLoans = async (req, res, next) => {
                LEFT JOIN users a ON l.approved_by = a.id
                ORDER BY l.created_at DESC`;
         const [rows] = await pool.query(query);
-        res.json({ success: true, loans: rows });
+        const loansWithDynamic = rows.map(loan => ({
+            ...loan,
+            ...calculateDynamicLoanDetails(loan)
+        }));
+        res.json({ success: true, loans: loansWithDynamic });
     } catch (err) { next(err); }
 };
 
@@ -26,14 +30,21 @@ const getLoan = async (req, res, next) => {
             [req.params.id]
         );
         if (!loan) throw new AppError('Loan not found', 404);
-        res.json({ success: true, loan });
+        const dynamicVars = calculateDynamicLoanDetails(loan);
+        res.json({ success: true, loan: { ...loan, ...dynamicVars } });
     } catch (err) { next(err); }
 };
 
-// POST /api/loans  (member requests a loan)
+// POST /api/loans (member requests a loan, or admin on behalf)
 const requestLoan = async (req, res, next) => {
     try {
-        const { principal, duration_months, purpose } = req.validated.body;
+        const { principal, duration_months, purpose, user_id } = req.validated.body;
+
+        let targetUserId = req.user.id;
+        if (user_id) {
+            if (req.user.role !== 'admin') throw new AppError('Only admins can request loans for others', 403);
+            targetUserId = user_id;
+        }
 
         // Fetch current interest rate
         const [[config]] = await pool.query('SELECT interest_rate FROM group_config WHERE id = 1');
@@ -43,8 +54,8 @@ const requestLoan = async (req, res, next) => {
         const [result] = await pool.query(
             `INSERT INTO loans (user_id, principal, interest_rate, duration_months, interest_amount, total_payable, remaining_balance, purpose, status)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')`,
-            [req.user.id, principal, config.interest_rate, duration_months,
-            details.interest_amount, details.total_payable, details.remaining_balance, purpose || null]
+            [targetUserId, principal, config.interest_rate, duration_months,
+                details.interest_amount, details.total_payable, details.remaining_balance, purpose || null]
         );
 
         res.status(201).json({

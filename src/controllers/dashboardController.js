@@ -64,6 +64,7 @@ const getAdminDashboard = async (req, res, next) => {
                 group_name: config.group_name,
                 monthly_subscription: config.monthly_subscription,
                 interest_rate: config.interest_rate,
+                announcement: config.announcement,
             },
         });
     } catch (err) { next(err); }
@@ -79,7 +80,7 @@ const getMemberDashboard = async (req, res, next) => {
             [userId]
         );
 
-        const [[config]] = await pool.query('SELECT total_fund, group_name, monthly_subscription FROM group_config WHERE id = 1');
+        const [[config]] = await pool.query('SELECT total_fund, group_name, monthly_subscription, announcement FROM group_config WHERE id = 1');
 
         // Current month contribution
         const currentMonth = new Date().toISOString().slice(0, 7);
@@ -122,6 +123,7 @@ const getMemberDashboard = async (req, res, next) => {
                 group_fund: config.total_fund,
                 group_name: config.group_name,
                 monthly_subscription: config.monthly_subscription,
+                announcement: config.announcement,
                 current_month_contribution: monthContrib || null,
                 active_loan: activeLoan || null,
                 contribution_stats: contribStats,

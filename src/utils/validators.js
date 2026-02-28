@@ -65,8 +65,23 @@ const addFundsSchema = z.object({
     }),
 });
 
+const debitFundsSchema = z.object({
+    body: z.object({
+        amount: z.number().positive(),
+        description: z.string().min(3).max(255),
+        date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+    }),
+});
+
+const announcementSchema = z.object({
+    body: z.object({
+        announcement: z.string().max(1000).nullable().optional(),
+    }),
+});
+
 const requestLoanSchema = z.object({
     body: z.object({
+        user_id: z.number().int().positive().optional(),
         principal: z.number().positive(),
         duration_months: z.number().int().min(1).max(60),
         purpose: z.string().max(255).optional(),
@@ -90,6 +105,8 @@ module.exports = {
     contributionSchema,
     updateContributionSchema,
     addFundsSchema,
+    debitFundsSchema,
+    announcementSchema,
     requestLoanSchema,
     repaymentSchema,
 };
