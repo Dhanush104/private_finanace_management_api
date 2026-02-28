@@ -1,0 +1,59 @@
+2026-02-23 20:04:28 [error]: ❌ MySQL connection failed:
+2026-02-24 09:03:56 [error]: Error: secretOrPrivateKey must have a value
+    at module.exports [as sign] (D:\Projects\ROYAL\backend\node_modules\jsonwebtoken\sign.js:111:20)
+    at signToken (D:\Projects\ROYAL\backend\src\controllers\authController.js:7:9)
+    at login (D:\Projects\ROYAL\backend\src\controllers\authController.js:27:23)
+2026-02-24 09:05:38 [error]: Error: secretOrPrivateKey must have a value
+    at module.exports [as sign] (D:\Projects\ROYAL\backend\node_modules\jsonwebtoken\sign.js:111:20)
+    at signToken (D:\Projects\ROYAL\backend\src\controllers\authController.js:7:9)
+    at login (D:\Projects\ROYAL\backend\src\controllers\authController.js:27:23)
+2026-02-25 07:32:21 [error]: ❌ MySQL connection failed:
+2026-02-25 15:18:55 [error]: TypeError: (config.total_fund + delta).toFixed is not a function
+    at updateGroupFund (D:\Projects\ROYAL\backend\src\services\groupFundService.js:18:60)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async recordContribution (D:\Projects\ROYAL\backend\src\controllers\contributionController.js:63:23)
+2026-02-25 15:19:02 [error]: TypeError: (config.total_fund + delta).toFixed is not a function
+    at updateGroupFund (D:\Projects\ROYAL\backend\src\services\groupFundService.js:18:60)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async recordContribution (D:\Projects\ROYAL\backend\src\controllers\contributionController.js:63:23)
+2026-02-25 15:24:34 [error]: TypeError: (config.total_fund + delta).toFixed is not a function
+    at updateGroupFund (D:\Projects\ROYAL\backend\src\services\groupFundService.js:18:60)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async recordContribution (D:\Projects\ROYAL\backend\src\controllers\contributionController.js:63:23)
+2026-02-25 15:25:31 [error]: TypeError: (config.total_fund + delta).toFixed is not a function
+    at updateGroupFund (D:\Projects\ROYAL\backend\src\services\groupFundService.js:18:60)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async recordContribution (D:\Projects\ROYAL\backend\src\controllers\contributionController.js:63:23)
+2026-02-25 15:28:49 [error]: TypeError: (config.total_fund + delta).toFixed is not a function
+    at updateGroupFund (D:\Projects\ROYAL\backend\src\services\groupFundService.js:18:60)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async recordContribution (D:\Projects\ROYAL\backend\src\controllers\contributionController.js:67:23)
+2026-02-25 15:29:00 [error]: TypeError: (config.total_fund + delta).toFixed is not a function
+    at updateGroupFund (D:\Projects\ROYAL\backend\src\services\groupFundService.js:18:60)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async recordContribution (D:\Projects\ROYAL\backend\src\controllers\contributionController.js:67:23)
+2026-02-28 21:58:56 [error]: TypeError: (loan.principal + dynamic_interest_amount).toFixed is not a function
+    at calculateDynamicLoanDetails (D:\Projects\ROYAL\backend\src\services\loanService.js:50:89)
+    at D:\Projects\ROYAL\backend\src\controllers\loanController.js:18:16
+    at Array.map (<anonymous>)
+    at getLoans (D:\Projects\ROYAL\backend\src\controllers\loanController.js:16:39)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2026-02-28 22:00:44 [error]: Error: Unknown column 'announcement' in 'field list'
+    at PromisePool.query (D:\Projects\ROYAL\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at updateAnnouncement (D:\Projects\ROYAL\backend\src\controllers\groupController.js:90:20)
+    at Layer.handle [as handle_request] (D:\Projects\ROYAL\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\Projects\ROYAL\backend\node_modules\express\lib\router\route.js:149:13)
+    at D:\Projects\ROYAL\backend\src\middleware\validate.js:18:5
+    at Layer.handle [as handle_request] (D:\Projects\ROYAL\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\Projects\ROYAL\backend\node_modules\express\lib\router\route.js:149:13)
+    at D:\Projects\ROYAL\backend\src\middleware\authorize.js:8:9
+    at Layer.handle [as handle_request] (D:\Projects\ROYAL\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\Projects\ROYAL\backend\node_modules\express\lib\router\route.js:149:13)
+2026-02-28 22:02:11 [error]: ❌ MySQL connection failed:
+2026-02-28 22:03:48 [error]: TypeError: (loan.principal + dynamic_interest_amount).toFixed is not a function
+    at calculateDynamicLoanDetails (D:\Projects\ROYAL\backend\src\services\loanService.js:50:89)
+    at D:\Projects\ROYAL\backend\src\controllers\loanController.js:18:16
+    at Array.map (<anonymous>)
+    at getLoans (D:\Projects\ROYAL\backend\src\controllers\loanController.js:16:39)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2026-02-28 22:08:02 [error]: ❌ MySQL connection failed:
