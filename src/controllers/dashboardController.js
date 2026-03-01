@@ -51,6 +51,7 @@ const getAdminDashboard = async (req, res, next) => {
         res.json({
             success: true,
             dashboard: {
+<<<<<<< HEAD
                 total_fund: config?.total_fund || 0,
                 total_members: total_members || 0,
                 total_contributions: total_contributions || 0,
@@ -65,6 +66,21 @@ const getAdminDashboard = async (req, res, next) => {
                 monthly_subscription: config?.monthly_subscription || 0,
                 interest_rate: config?.interest_rate || 0,
                 announcement: config?.announcement || null,
+=======
+                total_fund: config.total_fund,
+                total_members,
+                total_contributions,
+                active_loans,
+                pending_loans,
+                total_loaned,
+                total_interest_earned,
+                monthly_contributions: monthlyData,
+                credit_leaderboard: creditLeaderboard,
+                recent_transactions: recentTransactions,
+                group_name: config.group_name,
+                monthly_subscription: config.monthly_subscription,
+                interest_rate: config.interest_rate,
+>>>>>>> main
             },
         });
     } catch (err) { next(err); }
@@ -80,7 +96,11 @@ const getMemberDashboard = async (req, res, next) => {
             [userId]
         );
 
+<<<<<<< HEAD
         const [[config]] = await pool.query('SELECT total_fund, group_name, monthly_subscription, announcement FROM group_config WHERE id = 1');
+=======
+        const [[config]] = await pool.query('SELECT total_fund, group_name, monthly_subscription FROM group_config WHERE id = 1');
+>>>>>>> main
 
         // Current month contribution
         const currentMonth = new Date().toISOString().slice(0, 7);
@@ -120,6 +140,7 @@ const getMemberDashboard = async (req, res, next) => {
             success: true,
             dashboard: {
                 user,
+<<<<<<< HEAD
                 group_fund: config?.total_fund || 0,
                 group_name: config?.group_name || 'Group Name',
                 monthly_subscription: config?.monthly_subscription || 0,
@@ -129,6 +150,16 @@ const getMemberDashboard = async (req, res, next) => {
                 contribution_stats: contribStats || { total_months: 0, paid_months: 0, total_paid: 0 },
                 recent_loans: loans || [],
                 recent_transactions: transactions || [],
+=======
+                group_fund: config.total_fund,
+                group_name: config.group_name,
+                monthly_subscription: config.monthly_subscription,
+                current_month_contribution: monthContrib || null,
+                active_loan: activeLoan || null,
+                contribution_stats: contribStats,
+                recent_loans: loans,
+                recent_transactions: transactions,
+>>>>>>> main
             },
         });
     } catch (err) { next(err); }

@@ -725,6 +725,7 @@
 2026-02-25 16:26:47 [info]: ::1 - - [25/Feb/2026:10:56:47 +0000] "GET /api/dashboard/member HTTP/1.1" 304 - "http://localhost:5173/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
 2026-02-25 16:26:47 [info]: ::1 - - [25/Feb/2026:10:56:47 +0000] "GET /api/dashboard/member HTTP/1.1" 304 - "http://localhost:5173/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
 2026-02-25 16:26:51 [info]: 🔌 Socket disconnected: DOzGtWybPAitd9pLAAAM
+<<<<<<< HEAD
 2026-02-26 13:50:03 [warn]: 400 - Validation error: email: Required; password: Required - /api/auth/login
 2026-02-26 13:51:01 [warn]: 400 - Validation error: email: Required; password: Required - /api/auth/login/
 2026-02-28 21:44:02 [warn]: 401 - Authentication required - /api/dashboard/admin
@@ -775,3 +776,5 @@
     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
 2026-02-28 22:07:54 [warn]: Seed skipped or failed:
 2026-02-28 22:08:02 [error]: ❌ MySQL connection failed:
+=======
+>>>>>>> main

@@ -1,6 +1,7 @@
 const mysql = require('mysql2/promise');
 const logger = require('../utils/logger');
 
+<<<<<<< HEAD
 let poolConfig;
 
 if (process.env.MYSQL_URL || process.env.DATABASE_URL) {
@@ -21,6 +22,20 @@ if (process.env.MYSQL_URL || process.env.DATABASE_URL) {
 }
 
 const pool = mysql.createPool(poolConfig);
+=======
+const pool = mysql.createPool({
+  host:     process.env.DB_HOST     || 'localhost',
+  port:     parseInt(process.env.DB_PORT || '3306'),
+  user:     process.env.DB_USER     || 'root',
+  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME     || 'royal_star_boys',
+  waitForConnections: true,
+  connectionLimit:    10,
+  queueLimit:         0,
+  timezone:           '+00:00',
+  dateStrings:        false,
+});
+>>>>>>> main
 
 pool.getConnection()
   .then(conn => {

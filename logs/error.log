@@ -32,6 +32,7 @@
     at updateGroupFund (D:\Projects\ROYAL\backend\src\services\groupFundService.js:18:60)
     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
     at async recordContribution (D:\Projects\ROYAL\backend\src\controllers\contributionController.js:67:23)
+<<<<<<< HEAD
 2026-02-28 21:58:56 [error]: TypeError: (loan.principal + dynamic_interest_amount).toFixed is not a function
     at calculateDynamicLoanDetails (D:\Projects\ROYAL\backend\src\services\loanService.js:50:89)
     at D:\Projects\ROYAL\backend\src\controllers\loanController.js:18:16
@@ -57,3 +58,5 @@
     at getLoans (D:\Projects\ROYAL\backend\src\controllers\loanController.js:16:39)
     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
 2026-02-28 22:08:02 [error]: ❌ MySQL connection failed:
+=======
+>>>>>>> main

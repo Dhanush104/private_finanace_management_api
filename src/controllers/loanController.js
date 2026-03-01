@@ -1,5 +1,6 @@
 const pool = require('../config/db');
 const AppError = require('../utils/AppError');
+<<<<<<< HEAD
 const { calculateLoanDetails, calculateDynamicLoanDetails } = require('../services/loanService');
 const { updateGroupFund } = require('../services/groupFundService');
 const { broadcast } = require('../config/socket');
@@ -8,16 +9,43 @@ const { broadcast } = require('../config/socket');
 const getLoans = async (req, res, next) => {
     try {
         const query = `SELECT l.*, u.name as member_name, a.name as approved_by_name
+=======
+const { calculateLoanDetails } = require('../services/loanService');
+const { updateGroupFund } = require('../services/groupFundService');
+const { broadcast } = require('../config/socket');
+
+// GET /api/loans  (admin: all | member: own)
+const getLoans = async (req, res, next) => {
+    try {
+        let query, params;
+        if (req.user.role === 'admin') {
+            query = `SELECT l.*, u.name as member_name, a.name as approved_by_name
+>>>>>>> main
                FROM loans l
                JOIN users u ON l.user_id = u.id
                LEFT JOIN users a ON l.approved_by = a.id
                ORDER BY l.created_at DESC`;
+<<<<<<< HEAD
         const [rows] = await pool.query(query);
         const loansWithDynamic = rows.map(loan => ({
             ...loan,
             ...calculateDynamicLoanDetails(loan)
         }));
         res.json({ success: true, loans: loansWithDynamic });
+=======
+            params = [];
+        } else {
+            query = `SELECT l.*, u.name as member_name, a.name as approved_by_name
+               FROM loans l
+               JOIN users u ON l.user_id = u.id
+               LEFT JOIN users a ON l.approved_by = a.id
+               WHERE l.user_id = ?
+               ORDER BY l.created_at DESC`;
+            params = [req.user.id];
+        }
+        const [rows] = await pool.query(query, params);
+        res.json({ success: true, loans: rows });
+>>>>>>> main
     } catch (err) { next(err); }
 };
 
@@ -30,6 +58,7 @@ const getLoan = async (req, res, next) => {
             [req.params.id]
         );
         if (!loan) throw new AppError('Loan not found', 404);
+<<<<<<< HEAD
         const dynamicVars = calculateDynamicLoanDetails(loan);
         res.json({ success: true, loan: { ...loan, ...dynamicVars } });
     } catch (err) { next(err); }
@@ -45,6 +74,17 @@ const requestLoan = async (req, res, next) => {
             if (req.user.role !== 'admin') throw new AppError('Only admins can request loans for others', 403);
             targetUserId = user_id;
         }
+=======
+        if (req.user.role !== 'admin' && req.user.id !== loan.user_id) throw new AppError('Access denied', 403);
+        res.json({ success: true, loan });
+    } catch (err) { next(err); }
+};
+
+// POST /api/loans  (member requests a loan)
+const requestLoan = async (req, res, next) => {
+    try {
+        const { principal, duration_months, purpose } = req.validated.body;
+>>>>>>> main
 
         // Fetch current interest rate
         const [[config]] = await pool.query('SELECT interest_rate FROM group_config WHERE id = 1');
@@ -54,8 +94,13 @@ const requestLoan = async (req, res, next) => {
         const [result] = await pool.query(
             `INSERT INTO loans (user_id, principal, interest_rate, duration_months, interest_amount, total_payable, remaining_balance, purpose, status)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')`,
+<<<<<<< HEAD
             [targetUserId, principal, config.interest_rate, duration_months,
                 details.interest_amount, details.total_payable, details.remaining_balance, purpose || null]
+=======
+            [req.user.id, principal, config.interest_rate, duration_months,
+            details.interest_amount, details.total_payable, details.remaining_balance, purpose || null]
+>>>>>>> main
         );
 
         res.status(201).json({
