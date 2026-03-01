@@ -1,10 +1,8 @@
 const pool = require('../config/db');
 const AppError = require('../utils/AppError');
-<<<<<<< HEAD
+
 const { splitRepayment, calculateDynamicLoanDetails } = require('../services/loanService');
-=======
-const { splitRepayment } = require('../services/loanService');
->>>>>>> main
+
 const { updateGroupFund } = require('../services/groupFundService');
 const { updateCreditScore, CREDIT_EVENTS } = require('../services/creditScoreService');
 const { broadcast } = require('../config/socket');
@@ -45,7 +43,7 @@ const recordRepayment = async (req, res, next) => {
         const [[loan]] = await conn.query('SELECT * FROM loans WHERE id = ? FOR UPDATE', [loan_id]);
         if (!loan) throw new AppError('Loan not found', 404);
         if (loan.status !== 'active') throw new AppError('Loan is not active', 400);
-<<<<<<< HEAD
+
         const dynamic = calculateDynamicLoanDetails(loan);
         const dynamicRemaining = dynamic.dynamic_remaining_balance;
 
@@ -61,17 +59,6 @@ const recordRepayment = async (req, res, next) => {
         const paidInterestSoFar = Math.min(totalPaidSoFar, dynamic.dynamic_interest_amount);
         const remainingInterest = parseFloat((dynamic.dynamic_interest_amount - paidInterestSoFar).toFixed(2));
         const remainingPrincipal = parseFloat((dynamicRemaining - remainingInterest).toFixed(2));
-=======
-        if (amount > loan.remaining_balance + 0.01) {
-            throw new AppError(`Repayment exceeds remaining balance of ${loan.remaining_balance}`, 400);
-        }
-
-        // Determine remaining principal and interest
-        const totalPaid = parseFloat((loan.total_payable - loan.remaining_balance).toFixed(2));
-        const paidInterest = Math.min(totalPaid, loan.interest_amount);
-        const remainingInterest = parseFloat((loan.interest_amount - paidInterest).toFixed(2));
-        const remainingPrincipal = parseFloat((loan.remaining_balance - remainingInterest).toFixed(2));
->>>>>>> main
 
         const { principal_portion, interest_portion } = splitRepayment(amount, remainingPrincipal, remainingInterest);
 
@@ -82,7 +69,7 @@ const recordRepayment = async (req, res, next) => {
             [loan_id, loan.user_id, amount, principal_portion, interest_portion, notes || null]
         );
 
-<<<<<<< HEAD
+
         const newRemainingBalance = parseFloat((dynamicRemaining - amount).toFixed(2));
         const isClosed = newRemainingBalance <= 0.009;
 
@@ -92,14 +79,7 @@ const recordRepayment = async (req, res, next) => {
         await conn.query(
             `UPDATE loans SET remaining_balance = ?, status = ?, interest_amount = ?, total_payable = ? WHERE id = ?`,
             [Math.max(0, newRemainingBalance), isClosed ? 'closed' : 'active', dynamic.dynamic_interest_amount, dynamic.dynamic_total_payable, loan_id]
-=======
-        const newBalance = parseFloat((loan.remaining_balance - amount).toFixed(2));
-        const isClosed = newBalance <= 0.009;
 
-        await conn.query(
-            `UPDATE loans SET remaining_balance = ?, status = ? WHERE id = ?`,
-            [Math.max(0, newBalance), isClosed ? 'closed' : 'active', loan_id]
->>>>>>> main
         );
 
         // Add full repayment amount to group fund (principal returns + interest earned)

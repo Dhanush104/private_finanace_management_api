@@ -3,8 +3,6 @@ const AppError = require('../utils/AppError');
 const { updateGroupFund } = require('../services/groupFundService');
 const { updateCreditScore, CREDIT_EVENTS } = require('../services/creditScoreService');
 const { broadcast } = require('../config/socket');
-
-<<<<<<< HEAD
 // GET /api/contributions  (all members can see all contributions)
 const getContributions = async (req, res, next) => {
     try {
@@ -14,28 +12,7 @@ const getContributions = async (req, res, next) => {
                ORDER BY c.created_at DESC`;
 
         const [rows] = await pool.query(query);
-=======
-// GET /api/contributions  (admin: all | member: own)
-const getContributions = async (req, res, next) => {
-    try {
-        let query, params;
-        if (req.user.role === 'admin') {
-            query = `SELECT c.*, u.name as member_name
-               FROM contributions c
-               JOIN users u ON c.user_id = u.id
-               ORDER BY c.created_at DESC`;
-            params = [];
-        } else {
-            query = `SELECT c.*, u.name as member_name
-               FROM contributions c
-               JOIN users u ON c.user_id = u.id
-               WHERE c.user_id = ?
-               ORDER BY c.created_at DESC`;
-            params = [req.user.id];
-        }
 
-        const [rows] = await pool.query(query, params);
->>>>>>> main
         res.json({ success: true, contributions: rows });
     } catch (err) { next(err); }
 };
@@ -125,7 +102,7 @@ const updateContribution = async (req, res, next) => {
     } catch (err) { next(err); }
 };
 
-<<<<<<< HEAD
+
 // POST /api/contributions/:id/approve (admin only)
 const approveContribution = async (req, res, next) => {
     const conn = await pool.getConnection();
@@ -187,6 +164,4 @@ const rejectContribution = async (req, res, next) => {
 };
 
 module.exports = { getContributions, recordContribution, updateContribution, approveContribution, rejectContribution };
-=======
-module.exports = { getContributions, recordContribution, updateContribution };
->>>>>>> main
+
