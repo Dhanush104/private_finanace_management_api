@@ -57,8 +57,6 @@ const updateContributionSchema = z.object({
         notes: z.string().max(255).optional().nullable(),
     }),
 });
-
-<<<<<<< HEAD
 const addFundsSchema = z.object({
     body: z.object({
         amount: z.number().positive(),
@@ -83,10 +81,6 @@ const announcementSchema = z.object({
 const requestLoanSchema = z.object({
     body: z.object({
         user_id: z.number().int().positive().optional(),
-=======
-const requestLoanSchema = z.object({
-    body: z.object({
->>>>>>> main
         principal: z.number().positive(),
         duration_months: z.number().int().min(1).max(60),
         purpose: z.string().max(255).optional(),
@@ -109,12 +103,9 @@ module.exports = {
     groupConfigSchema,
     contributionSchema,
     updateContributionSchema,
-<<<<<<< HEAD
     addFundsSchema,
     debitFundsSchema,
     announcementSchema,
-=======
->>>>>>> main
     requestLoanSchema,
     repaymentSchema,
 };
