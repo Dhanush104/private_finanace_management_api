@@ -1,9 +1,8 @@
 const pool = require('../config/db');
 const AppError = require('../utils/AppError');
-<<<<<<< HEAD
+
 const { updateGroupFund } = require('../services/groupFundService');
-=======
->>>>>>> main
+
 
 // GET /api/group
 const getGroupConfig = async (req, res, next) => {
@@ -27,7 +26,7 @@ const updateGroupConfig = async (req, res, next) => {
     } catch (err) { next(err); }
 };
 
-<<<<<<< HEAD
+
 // POST /api/group/add-funds (admin only)
 const addFunds = async (req, res, next) => {
     const conn = await pool.getConnection();
@@ -100,6 +99,4 @@ const updateAnnouncement = async (req, res, next) => {
 };
 
 module.exports = { getGroupConfig, updateGroupConfig, addFunds, debitFunds, updateAnnouncement };
-=======
-module.exports = { getGroupConfig, updateGroupConfig };
->>>>>>> main
+

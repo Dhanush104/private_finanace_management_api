@@ -26,7 +26,7 @@ const splitRepayment = (amount, remainingPrincipal, remainingInterest) => {
     return { principal_portion: principalPortion, interest_portion: interestPortion };
 };
 
-<<<<<<< HEAD
+
 /**
  * Calculate dynamic real-time interest based on elapsed time.
  */
@@ -67,6 +67,3 @@ const calculateDynamicLoanDetails = (loan) => {
 };
 
 module.exports = { calculateLoanDetails, splitRepayment, calculateDynamicLoanDetails };
-=======
-module.exports = { calculateLoanDetails, splitRepayment };
->>>>>>> main

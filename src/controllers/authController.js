@@ -3,16 +3,13 @@ const jwt = require('jsonwebtoken');
 const pool = require('../config/db');
 const AppError = require('../utils/AppError');
 
-<<<<<<< HEAD
+
 const signToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET || 'supersecret_fallback_key', {
         expiresIn: process.env.JWT_EXPIRES_IN || '30d',
     });
 };
-=======
-const signToken = (id, role) =>
-    jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN || '7d' });
->>>>>>> main
+
 
 // POST /api/auth/login
 const login = async (req, res, next) => {
